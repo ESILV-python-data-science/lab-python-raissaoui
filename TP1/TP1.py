@@ -1,5 +1,6 @@
 import csv
 import pandas as pd
+import math
 
 #Question1
 with open('jfkrelease-2017-dce65d0ec70a54d5744de17d280f3ad2.csv','r') as filejfk:
@@ -58,14 +59,48 @@ print("Le nombre de valeurs manquantes est", missing)
 #doc type =7-1
 
 type=nom.index('Doc Type')
-Doctype = field[type]
+ListType=[]
 
-for line in [1,liste]:
-	field = line.split(';'); Doctype = field[type]
-    #print(Doctype)
+for line in liste:
+	field = line.split(';')
 	try :
-		if field[type]!=Doctype : print(field[type])
+		Doctype=(field[type]);ListType.append(Doctype)
 	except ValueError:
 		missing += 1
+print(ListType)
+lenListe=len(ListType)
+for field in ListType:
+    try:
+        count = 0
+        for champ in ListType:
+            if field in champ:
+                count += 1
+        print('Le nombre de ',field,'est ',count)
+    except ValueError:
+        missing+=1
+
+
+#Question4
+
+#Question5
+df = pd.read_csv('jfkrelease-2017-dce65d0ec70a54d5744de17d280f3ad2.csv',na_values=['.'],error_bad_lines=False,sep=";")
+
+#print(df.ix[:, 11])
+myList = list(df.ix[:, 11])
+somme=0
+total=0
+mean=0
+max=myList[0]
+min=myList[0]
+nbPages=0
+missing=0
+
+#Question6
+
+
+
+
+
+
 
 
