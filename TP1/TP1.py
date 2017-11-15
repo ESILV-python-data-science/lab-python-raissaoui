@@ -1,13 +1,16 @@
 import csv
 import pandas as pd
 import math
+import seaborn
+import jupyter
+import time
 
 #Question1
-file='jfkrelease-2017-dce65d0ec70a54d5744de17d280f3ad2.csv'
 
-def CountLine(filejfk):
-    with open(filejfk,'r') as filejfk:
-        reader = csv.reader(filejfk, delimiter=':', quoting=csv.QUOTE_NONE)
+def CountLine(file):
+    #file = 'jfkrelease-2017-dce65d0ec70a54d5744de17d280f3ad2.csv'
+    with open(file,'r') as filejfk:
+        reader = csv.reader(file, delimiter=':', quoting=csv.QUOTE_NONE)
 
     ligne=1
     for row in reader:
@@ -19,10 +22,11 @@ def CountLine(filejfk):
 
 
 #Question2
-def CountMath(filejfk):
-
+def CountMath(file):
+    filejfk=open(file,'r')
     liste = list(filejfk)
     nom = liste[0].split(';')
+    col = nom.index('Num Pages')
     nbField = len(nom)
     count = 0
 
@@ -33,7 +37,6 @@ def CountMath(filejfk):
     missing = 0
     nbPages = 0
     sum = 0
-    col = nom.index('Num Pages')
     nbDocs = 0
     for line in liste:
         nbDocs += 1
@@ -57,7 +60,8 @@ def CountMath(filejfk):
 
 #Question3
 
-def Doctype(filejfk):
+def Doctype(file):
+    filejfk=open(file,'r')
     liste = list(filejfk)
     nom = liste[0].split(';')
     type = nom.index('Doc Type')
@@ -83,8 +87,8 @@ def Doctype(filejfk):
             print("Error")
 
 
-def Dictionary(filejfk):
-    liste = list(filejfk)
+def Dictionary(file):
+    liste = list(file)
     nom = liste[0].split(';')
     type = nom.index('Doc Type')
     ListType = []
@@ -112,35 +116,53 @@ def Dictionary(filejfk):
 #Question4
 #What are the oldest and the more recent documents ?
 #Compute the number of documents per year
-def Oldest(filejfk):
+def Date(file):
+    filejfk=open(file,'r')
     liste = list(filejfk)
     nom = liste[0].split(';')
-    type = nom.index('Doc Type')
-    ListType = []
-
+    date = nom.index('Doc Date')
+    ListDate = []
     for line in liste:
         field = line.split(';')
         try:
-            Doctype = (field[type]);
-            ListType.append(Doctype)
+            DocDate = field[date]
+            ListDate.append(DocDate)
         except ValueError:
             print("Error")
-    print(ListType)
-    lenListe = len(ListType)
-    for field in ListType:
+    #print(ListDate)
+    minimum = 1800
+
+    for date in ListDate:
+        field = date.split(';')
+        dat = field[0]
+        year = dat[6:10]
+        #year = int(float(annnee))
+        if (year < minimum) and (year != 0):
+            minimum = year
+    print(minimum)
+
+
+
+def Oldest(file):
+    ListeDate=Date(file)
+    min = 1000
+    for date in ListeDate:
         try:
-            count = 0
-            for champ in ListType:
-                if field in champ:
-                    count += 1
-            print('Le nombre de ', field, 'est ', count)
-        except ValueError:
+            field = date.split(';')
+            dat = field[0]
+            year = dat[6:10]
+            print(type(year))
+            if year < min: min = year
+        except:
             print("Error")
+    print(min)
+
+
 
 
 #Question5
-def Pandaa(filejfk):
-    df = pd.read_csv(filejfk, na_values=['.'], error_bad_lines=False,
+def Pandaa(file):
+    df = pd.read_csv(file, na_values=['.'], error_bad_lines=False,
                      sep=";")
 
     # print(df.ix[:, 11])
@@ -152,7 +174,8 @@ def Pandaa(filejfk):
     min = myList[0]
     nbPages = 0
     missing = 0
-    for i in [0, len(myList)]:
+    n=len(myList)
+    for i in [0,n]:
         try:
             somme += myList[i]
             if myList[i] < min:
@@ -171,17 +194,18 @@ def Pandaa(filejfk):
 #Main
 
 #Question1
-filejfk='jfkrelease-2017-dce65d0ec70a54d5744de17d280f3ad2.csv'
-#CountLine(filejfk)
+file='jfkrelease-2017-dce65d0ec70a54d5744de17d280f3ad2.csv'
+#CountLine(file)
 #Question2
-#CountMath(filejfk)
+#CountMath(file)
 #Question3
-#Doctype(filejfk)
-#Dictionary(filejfk)
+#Doctype(file)
+#Dictionary(file)
 #Question4
-#Oldest(filejfk)
+Date(file)
+#Oldest(file)
 #Question 5
-#Pandaa(filejfk)
+#Pandaa(file)
 
 
 
