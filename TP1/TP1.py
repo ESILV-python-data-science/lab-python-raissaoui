@@ -135,8 +135,8 @@ def Date(file):
     for date in ListDate:
         field = date.split(';')
         dat = field[0]
-        year = dat[6:10]
-        #year = int(float(annnee))
+        annnee = dat[6:10]
+        year = int((annnee))
         if (year < minimum) and (year != 0):
             minimum = year
     print(minimum)
