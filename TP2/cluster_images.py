@@ -13,6 +13,9 @@ import os
 import shutil
 import time
 import sys
+import matplotlib.pyplot as plt
+from matplotlib import style
+style.use("ggplot")
 
 from tqdm import tqdm
 from PIL import Image, ImageFilter
@@ -103,16 +106,18 @@ if __name__ == "__main__":
     data = []
     if args.images_dir:
         SOURCE_IMG_DIR = args.images_dir
-
-        # TODO : write the code to list all the images in the input directory
-        # and store their path in images_path_list
-
+        images_path_list = glob.glob("{0}/*.jpg".format(SOURCE_IMG_DIR))
+        logger.info('images_path_list intliazed, we have {0} jpg images in {1} '.format(len(images_path_list),SOURCE_IMG_DIR))
     if not images_path_list:
         logger.warning("Did not found any jpg image in %s"%args.images_dir)
         sys.exit(0)
-
-    # TODO : Extract the feature vector on all the pages found and store the feature
-    # vectors in  data
+    logger.info('handling the feature vector')
+    pbar = tqdm(total=len(images_path_list))
+    for img in images_path_list:
+        pbar.update(1)
+        data.append(extract_features(Image.open(img)))
+    pbar.close()
+    logger.info('Feature vector intalized')
 
     # cluster the feature vectors
     if not data:
@@ -122,6 +127,30 @@ if __name__ == "__main__":
     # convert to np array (default format for scikit-learn)
     X = np.array(data)
     logger.info("Running clustering")
+    kmeans = KMeans(n_clusters=3)
+    kmeans.fit(X)
 
-    # TODO : run the K-Means clusering and call copy_to_dir to copy the image
-    # in the directory corresponding to its cluster
+    centroids = kmeans.cluster_centers_
+    labels = kmeans.labels_
+
+    logger.debug('centroides')
+    logger.debug(centroids)
+    logger.debug(len(centroids))
+    for centre in centroids:
+        logger.debug('each centroide')
+        logger.debug(len(centre))
+    logger.info('labels:')
+    logger.debug(labels)
+    logger.debug(len(labels))
+
+    colors = ["g.", "r.", "c."]
+
+    for i in range(len(X)):
+        logger.debug("coordinate:", X[i], "label:", labels[i])
+        plt.plot(X[i][0], X[i][1], colors[labels[i]], markersize=10)
+
+    plt.scatter(centroids[:, 0], centroids[:, 1], marker="x", s=150, linewidths=5, zorder=10)
+
+    plt.show()
+    copy_to_dir(images_path_list, labels,CLUSTER_DIR)
+    logger.info("The end, check the cluster images in {0}".format(CLUSTER_DIR))
