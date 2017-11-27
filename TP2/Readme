@@ -1,0 +1,28 @@
+#!/usr/bin/python
+# vim: set fileencoding=<encoding name> :
+
+
+/***Five Clusters***/
+J'ai commencé à faire 5 clusters aléatoirement, et j'ai eu ce graphe: fiveclusters.png
+et ensuite j'ai fait un zoom sur le graphe et j'ai obtenu ça: fiveclusters zoom on centroides.png
+
+/***Three Clusters***/
+et donc j'ai remarqué qu'il y a seulement 3 groupes (car il y a deux clusters qui sont trop proches,
+donc il y a un cluster qui est mal configuré.
+
+/***Solution***/
+Et là où j'ai décidé à refaire avec juste 3 clusters pour obtenir ce graphe: threeclusters.png
+
+
+
+/***Resultat***/
+The best cluster is: threeclusters.png
+
+Il y a 3 clusters:
+* un qui représente les feuilles d'un livre
+* le deuxieme représente les personnages
+* le troiseme représente les plans du livre
+
+
+
+
