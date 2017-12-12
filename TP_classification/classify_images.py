@@ -10,6 +10,7 @@ import argparse
 import logging
 import time
 import sys
+import math
 
 from tqdm import tqdm
 import pandas as pd
@@ -61,6 +62,12 @@ def extract_features_subresolution(img,img_feature_size = (8, 8)):
 
     # return the values of the reduced image as features
     return [255 - i for i in reduced_img.getdata()]
+
+def distanceTES(observation,columns,distanceTo) :
+    between_value  = 0
+    for i in columns :
+        between_value += (observation[i] - distanceTo)**2
+    return math.sqrt(between_value)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Extract features, train a classifier on images and test the classifier')
@@ -136,28 +143,49 @@ if __name__ == "__main__":
         logger.info('No classifier to train, exit')
         sys.exit()
 
-    # Train classifier
-    logger.info("Training Classifier")
+        # Train classifier
+        logger.info("Training Classifier")
 
-    # Use train_test_split to create train/test split
-    #   rouge logger.info("Train set size is {}".format(X_train.shape))
-    #   rouge logger.info("Test set size is {}".format(X_test.shape))
+        if args.nearest_neighbors:
+            # create KNN classifier with args.nearest_neighbors as a parameter
+            logger.info('Use kNN classifier with k= {}'.format(args.nearest_neighbors))
+        else:
+            logger.error('No classifier specified')
+            sys.exit()
 
-    if args.nearest_neighbors:
-        # create KNN classifier with args.nearest_neighbors as a parameter
-        logger.info('Use kNN classifier with k= {}'.format(args.nearest_neighbors))
-    else:
-        logger.error('No classifier specified')
-        sys.exit()
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+        # Use train_test_split to create train/test split
+        logger.info("Train set size is {}".format(X_train.shape))
+        logger.info("Test set size is {}".format(X_test.shape))
 
-    # Do Training@
-    t0 = time.time()
-    logger.info("Training  done in %0.3fs" % (time.time() - t0))
+        # Do Training@
+        t0 = time.time()
+        # exampleImage = X_train.iloc[0]
+        # print(exampleImage)
+        # print(distance.euclidean(X_train.iloc[0],X_train.iloc[0]))
+        # distances = []
+        # for idx,row in X_train.iterrows():
+        #    distances.append(distance.euclidean(row,exampleImage))
+        # print(len(distances))
+        # df_distance = pd.DataFrame(data={"dist":distances,"idx":distances.index})
+        # print(len(df_distance.index))
+        # print(distances)
 
-    # Do testing
-    logger.info("Testing Classifier")
-    t0 = time.time()
-    #          rouge   predicted = clf.predict(X_test)
+        knn = KNeighborsClassifier(n_neighbors=args.nearest_neighbors)
+        knn.fit(X_train, y_train)
+        predictions_train = knn.predict(X_train)
+        predictions_test = knn.predict(X_test)
 
-    # Print score produced by metrics.classification_report and metrics.accuracy_score
-    logger.info("Testing  done in %0.3fs" % (time.time() - t0))
+        logger.info(
+            "accuracy got got the X_test is equals to {0}".format(metrics.accuracy_score(y_test, predictions_test)))
+        logger.info(
+            "accuracy got got the X_train is equals to {0}".format(metrics.accuracy_score(y_train, predictions_train)))
+        logger.info("Training  done in %0.3fs" % (time.time() - t0))
+
+        # Do testing
+        logger.info("Testing Classifier")
+        t0 = time.time()
+        #          rouge   predicted = clf.predict(X_test)
+
+        # Print score produced by metrics.classification_report and metrics.accuracy_score
+        logger.info("Testing  done in %0.3fs" % (time.time() - t0))
