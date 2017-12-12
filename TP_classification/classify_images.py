@@ -22,6 +22,9 @@ from sklearn.metrics import accuracy_score
 
 import numpy as np
 
+# sauvergader les features (première étape)
+# python classify_images.py --images-list MNIST_all.csv --features-only
+#  --save-features "C:\Users\Ramez Aissaoui\lab-python-raissaoui\TP_classification"
 
 # Setup logging
 logger = logging.getLogger('classify_images.py')
@@ -40,6 +43,7 @@ def extract_features_subresolution(img,img_feature_size = (8, 8)):
         :rtype: list of int in [0,255]
 
         """
+    # Answer 2
 
     # convert color images to grey level
     gray_img = img.convert('L')
@@ -78,8 +82,6 @@ if __name__ == "__main__":
         print(X)
 
     else:
-
-
         # Answer 1
         # file = "MNIST_all.csv"
         # Load the image list from CSV file using pd.read_csv
@@ -115,10 +117,16 @@ if __name__ == "__main__":
 
 
 
-    # save features
-    if args.save_features:
-        # convert X to dataframe with pd.DataFrame and save to pickle with to_pickle
 
+        # save features
+        if args.save_features:
+            print(y)
+            print(X)
+            # Answer 3
+            # convert X to dataframe with pd.DataFrame and save to pickle with to_pickle
+            df_features = pd.DataFrame(X)
+            df_features['class'] = y
+            df_features.to_pickle('save_features.pickle')
 
 
         logger.info('Saved {} features and class to {}'.format(df_features.shape, args.save_features))
