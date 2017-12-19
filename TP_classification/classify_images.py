@@ -22,17 +22,26 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 
 import numpy as np
-
+#CMD
 # sauvergader les features (première étape)
 # python classify_images.py --images-list MNIST_all.csv --features-only
 #  --save-features "C:\Users\Ramez Aissaoui\lab-python-raissaoui\TP_classification"
-
+# python classify_images.py --images-list MNIST_all.csv --features-only --save-features
+# "C:\Users\Ramez Aissaoui\lab-python-raissaoui\TP_classification"
 # Setup logging
+# python classify_images.py --load-features save_features.p  --features-only
+# python classify_images.py --load-features save_features.pickle  --features-only
+# python classify_images.py --load-features save_features.p --nearest-neighbors 1
+
+
 logger = logging.getLogger('classify_images.py')
 logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
 ch.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 logger.addHandler(ch)
+
+# Question 5
+# python classify_images.py --load-features save_features.p --nearest-neighbors 1
 
 def extract_features_subresolution(img,img_feature_size = (8, 8)):
     """
@@ -189,3 +198,5 @@ if __name__ == "__main__":
 
         # Print score produced by metrics.classification_report and metrics.accuracy_score
         logger.info("Testing  done in %0.3fs" % (time.time() - t0))
+        print(accuracy_score(Y_test, predicted))
+        print(classification_report(Y_test, predicted));
